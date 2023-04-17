@@ -2,7 +2,7 @@ pipeline {
 
   environment {
     dockerimagename = "adilson-tavares/react-app"
-    dockerImage = ""
+    dockerImage = "latest"
   }
 
   agent any
@@ -19,7 +19,7 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.build dockerimagename
+          dockerImage = docker.build("${env.dockerimagename}")
         }
       }
     }
