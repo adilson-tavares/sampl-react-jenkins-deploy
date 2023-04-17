@@ -21,12 +21,10 @@ pipeline {
     //       env.PATH = "${dockerHome}/bin:${env.PATH}"
     // }
     stage('Build image') {
-      steps{
-        
+         
         steps {
           // dockerImage = docker.build("${env.dockerimagename}")
           sh 'docker build -t tavarescruz/reactjs-app .'
-        }
       }
     }
     stage('Login') {
