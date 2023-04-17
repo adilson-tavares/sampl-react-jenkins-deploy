@@ -2,7 +2,7 @@ pipeline {
 
   environment {
     dockerimagename = "adilson-tavares/react-app"
-    dockerImage = "latest"
+    dockerImage = ""
   }
 
   agent any
