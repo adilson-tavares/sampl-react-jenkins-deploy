@@ -15,9 +15,13 @@ pipeline {
         credentialsId: 'github-credentials'
       }
     }
-
+    stage('Initialize'){
+          def dockerHome = '/home/adilson/.docker/'
+          env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
     stage('Build image') {
       steps{
+        
         script {
           dockerImage = docker.build("${env.dockerimagename}")
         }
