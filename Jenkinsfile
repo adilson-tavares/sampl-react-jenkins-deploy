@@ -1,8 +1,9 @@
 pipeline {
 
   environment {
-    dockerimagename = "adilson-tavares/react-app"
-    dockerImage = ""
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+    // dockerimagename = "adilson-tavares/react-app"
+    // dockerImage = ""
   }
 
   agent any
@@ -15,30 +16,41 @@ pipeline {
         credentialsId: 'github-credentials'
       }
     }
-    stage('Initialize'){
-          def dockerHome = tool '/home/adilson/.docker/'
-          env.PATH = "${dockerHome}/bin:${env.PATH}"
-    }
+    // stage('Initialize'){
+    //       def dockerHome = tool '/home/adilson/.docker/'
+    //       env.PATH = "${dockerHome}/bin:${env.PATH}"
+    // }
     stage('Build image') {
       steps{
         
         script {
-          dockerImage = docker.build("${env.dockerimagename}")
+          // dockerImage = docker.build("${env.dockerimagename}")
+          sh 'docker build -t tavarescruz/reactjs-app .'
         }
+      }
+    }
+    stage('Login') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
 
     stage('Pushing Image') {
-      environment {
-               registryCredential = 'dockerhub-credentials'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
-        }
+
+      steps {
+        // sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        sh 'docker push tavarescruz/reactjs-app-docker'
       }
+      // environment {
+      //          registryCredential = 'dockerhub-credentials'
+      //      }
+      // steps{
+      //   script {
+      //     docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+      //       dockerImage.push("latest")
+      //     }
+      //   }
+      // }
     }
 
     stage('Deploying React.js container to Kubernetes') { 
@@ -50,5 +62,9 @@ pipeline {
     }
 
   }
-
+  post {
+    always {
+      sh 'docker logout'
+    }
+  }
 }
