@@ -6,8 +6,9 @@ pipeline {
     // dockerImage = ""
   }
   
-  agent kubernetes
-
+  agent {
+      docker { image 'node:16.13.1-alpine' }
+  }
   stages {
 
     stage('Checkout Source') {
