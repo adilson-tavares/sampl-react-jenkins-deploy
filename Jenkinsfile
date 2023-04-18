@@ -1,12 +1,12 @@
 pipeline {
-
+  
   environment {
     DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     // dockerimagename = "adilson-tavares/react-app"
     // dockerImage = ""
   }
-
-  agent any
+  
+  agent kubernetes
 
   stages {
 
@@ -21,12 +21,12 @@ pipeline {
     //       env.PATH = "${dockerHome}/bin:${env.PATH}"
     // }
     stage('Build image') {
-         
-        steps {
-          // dockerImage = docker.build("${env.dockerimagename}")
-          sh 'docker build -t tavarescruz/reactjs-app .'
+      steps {
+        // dockerImage = docker.build("${env.dockerimagename}")
+        sh 'docker build -t tavarescruz/reactjs-app .'
       }
     }
+
     stage('Login') {
       steps {
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
